@@ -1,39 +1,65 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
 
-# Load the dataset
-data = pd.read_csv("C:/Users/MCA/Desktop/ML Lab Dataset/salary_data.csv")
+data=pd.read_csv("C:/Users/MCA/Desktop/ML Lab Dataset/salary_data.csv")
+#print(data.head())
 
-# Display the first few rows of the dataset
-print(data.head())
+#print(data.info())
 
-# Select the feature (X) and target variable (y)
-X = data[['YearsExperience']]
-y = data['Salary']
+#x=data['YearsExperience']
+#print(x)
+x=np.array(data.iloc[:,0])
+#print(x)
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+#print(x.shape)
+x=np.array(data.iloc[:][["YearsExperience"]])
+# print(x)
+# print(x.shape)
 
-# Create a linear regression model
-model = LinearRegression()
+y=np.array(data.iloc[:,1])
+#print(y.shape)
 
-# Train the model on the training set
-model.fit(X_train, y_train)
+xtrain, xtest, ytrain, ytest=train_test_split(x,y,train_size=.80, random_state=4697)
 
-# Make predictions on the test set
-y_pred = model.predict(X_test)
+model=LinearRegression()
+model.fit(xtrain,ytrain)
 
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-print(f'Mean Squared Error: {mse}')
+#Prediction
+ypred=model.predict(xtest)
+# print(ytest)
+# print(ypred)
 
-# Visualize the linear regression line
-plt.scatter(X_test, y_test, color='black')
-plt.plot(X_test, y_pred, color='blue', linewidth=3)
-plt.title('Linear Regression Model')
-plt.xlabel('Years of Experience')
-plt.ylabel('Salary')
+#accuracy
+r2=r2_score(ytest,ypred)
+print(r2)
+
+#plot the training samples- x and y
+# plt.figure(figsize=(8,5))
+# plt.scatter(xtrain, ytrain, color='red', s=100, label="Actual")
+# plt.scatter(xtrain, model.predict(xtrain), color='green', s=100, label="predicted")
+# #line of regression
+# plt.plot(xtrain, model.predict(xtrain), linestyle='dotted', color='purple')
+# #plt.show()
+
+#plot the testing samples- ytest and ypred
+plt.figure(figsize=(8,5))
+plt.scatter(xtest, ytest, color='red', s=100, label="Actual")
+plt.scatter(xtest, ypred, color='green', s=100, label="predicted")
+plt.plot(xtest, ypred, linestyle='dotted', color='purple')
 plt.show()
+
+# scores=[]
+# for i in range(5000):
+#     xtrain1, xtest1, ytrain1, ytest1=train_test_split(x,y, train_size=0.80, random_state=i)
+#     model1=LinearRegression()
+#     model1.fit(xtrain1, ytrain1)
+#     ypred1=model1.predict(xtest1)
+#     scores.append(r2_score(ytest1, ypred1))
+#
+# #print(scores)
+# print(np.max(scores))
+# print(np.argmax(scores))
